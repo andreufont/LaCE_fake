@@ -1,6 +1,5 @@
-import numpy as np
 import fake_spectra.tempdens as tdr
-from lace_manager.setup_simulations import read_gadget
+from lace_fake import read_gadget
 
 def compute_TDR(simdir,zmax=20):
     """Measure temperature-density relation for all snapshots above zmax"""

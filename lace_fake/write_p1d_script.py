@@ -1,7 +1,6 @@
-import numpy as np
 import os
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.postprocess import get_job_script
+from lace_fake import read_gadget
+from lace_fake import get_job_script
 
 def string_from_list(in_list):
     """ Given a list of floats, return a string with comma-separated values"""

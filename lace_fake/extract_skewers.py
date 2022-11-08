@@ -6,8 +6,7 @@ import fake_spectra.tempdens as tdr
 import fake_spectra.griddedspectra as grid_spec 
 import time
 # our modules
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.nuisance import thermal_model
+from lace_fake import read_gadget
 try:
     from lace.cosmo import camb_cosmo
     use_camb=True
@@ -63,11 +62,18 @@ def dkms_dMpc_z(raw_dir,num):
 
     return dkms_dMpc,z
 
+
+def thermal_broadening_kms(T_0):
+    """Thermal broadening RMS in velocity units, given T_0"""
+
+    sigma_T_kms=9.1 * np.sqrt(T_0/1.e4)
+    return sigma_T_kms
+
  
 def thermal_broadening_Mpc(T_0,dkms_dMpc):
     """Thermal broadening RMS in comoving units, given T_0"""
 
-    sigma_T_kms=thermal_model.thermal_broadening_kms(T_0)
+    sigma_T_kms=thermal_broadening_kms(T_0)
     sigma_T_Mpc=sigma_T_kms/dkms_dMpc
     return sigma_T_Mpc
 

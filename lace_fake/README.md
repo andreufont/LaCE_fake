@@ -1,3 +1,5 @@
+These are instructions by Chris Pedersen about running the post-processing at UCL. Probably need some updating...
+
 The postprocessings are done in 4 steps. To postprocess all snapshots for an individual simulation, in the `/scripts` folder we run:
 
 1. `python3 run_genpk_single.py`

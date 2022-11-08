@@ -4,7 +4,7 @@ import os
 import json
 import fake_spectra.spectra as spec
 from lace.setup_simulations import read_genic
-from lace_manager.postprocess import measure_flux_power as powF
+from lace_fake import measure_flux_power as powF
 
 class SnapshotAdmin(object):
     """Book-keeping of all elements related to a snapshot.

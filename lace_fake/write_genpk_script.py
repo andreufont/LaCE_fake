@@ -1,8 +1,7 @@
-import numpy as np
 import os
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.postprocess import flux_real_genpk
-from lace_manager.postprocess import get_job_script
+from lace_fake import read_gadget
+from lace_fake import flux_real_genpk
+from lace_fake import get_job_script
 
 def get_options_string(simdir,snap_num,verbose):
     """ Option string to pass to python script in SLURM"""

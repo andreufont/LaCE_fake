@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as spo
 import fake_spectra.abstractsnapshot as absn
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.postprocess import flux_real_genpk
+from lace_fake import read_gadget
+from lace_fake import flux_real_genpk
 
 def power_spectrum_model(k, A, n, kF):
     return A * (k ** n) * np.exp(-1. * ((k /kF) ** 2))
