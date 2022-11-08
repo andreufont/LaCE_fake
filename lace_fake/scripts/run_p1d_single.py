@@ -1,7 +1,10 @@
 import configargparse
-from lace_manager.postprocess import write_p1d_script as wps
+from lace_fake import write_p1d_script as wps
 
 """
+
+PROBABLY OBSOLETE, SHOULD USE series_flux_power.py INSTEAD
+
 For a single sim, read the fake_spectra files,
 calculate the p1d and write an archive-format .json file to
 store the mock p1d and parameters for a given training point.

@@ -1,11 +1,12 @@
 import os
-import sys
 import json
 import configargparse
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.postprocess import write_p1d_script as wps
+from lace_fake import write_p1d_script as wps
 
 """
+
+PROBABLY OBSOLETE, SHOULD USE series_flux_power.py INSTEAD
+
 For all sims in a LH suite, read the fake_spectra files,
 calculate the p1d and write an archive-format .json file to
 store the mock p1d and parameters for a given training point.

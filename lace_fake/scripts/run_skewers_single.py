@@ -1,5 +1,4 @@
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.postprocess import write_skewers_scripts as wss
+from lace_fake import write_skewers_scripts as wss
 
 """
 Script to run fake_spectra on all snapshots for a given simulation

@@ -1,10 +1,7 @@
 import os
-import sys
 import json
 import configargparse
-from shutil import copy
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.postprocess import write_genpk_script as wgs
+from lace_fake import write_genpk_script as wgs
 
 """
 Run Keir's modified GenPK on all sims in a specified

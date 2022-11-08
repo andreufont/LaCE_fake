@@ -1,5 +1,4 @@
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.postprocess import filtering_length
+from lace_fake import filtering_length
 
 """ This step of the postprocessing does not involve job submission scripts
 as the fits are computationally fast """

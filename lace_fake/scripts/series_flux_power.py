@@ -3,10 +3,9 @@ import configargparse
 import os
 import json
 # our modules below
-from lace_manager.postprocess import snapshot_admin
-from lace_manager.postprocess import extract_skewers
-from lace_manager.postprocess import measure_flux_power
-from lace_manager.setup_simulations import read_gadget
+from lace_fake import snapshot_admin
+from lace_fake import extract_skewers
+from lace_fake import read_gadget
 
 """
 Script will run the final step of the postprocessing, the calculation of the
@@ -42,7 +41,7 @@ with open(cube_json) as json_data:
 # get number of samples in the hyper-cube
 nsamples=cube_data['nsamples']
 
-# for each sample, extract skewers for each snapshot
+# for each sample, compute p1d 
 for sample in range(nsamples):
     # full path to folder for this particular simulation pair
     sim_dir=args.basedir+'/sim_pair_'+str(sample)
@@ -76,6 +75,7 @@ for sample in range(nsamples):
             snapshot=snapshot_admin.SnapshotAdmin(snap_filename,
                                 scales_tau=scales_tau,
                                 kF_Mpc=kF_Mpc)
+
             # measure flux power for all tau scalings, for all temperature scalings
             archive_p1d=snapshot.get_all_flux_power(pair_dir)
 
