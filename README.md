@@ -1,7 +1,16 @@
-# LaCE
-Lyman-alpha Cosmology Emulator. This code is a Gaussian process emulator for the 1D flux power spectrum
-of the Lyman-alpha forest, and was used to generate the results shown in
-https://arxiv.org/abs/2011.15127.
+# LaCE_fake
+
+This is a fork from Chris-Pedersen/LaCE_manager, that was used to manage the hydrodynamic simulations of the LaCE emulator (Pedersen et al. 2021, 2022).
+
+LaCE is the Lyman-alpha Cosmology Emulator. This code is a Gaussian process emulator for the 1D flux power spectrum of the Lyman-alpha forest. The emulator itself is accessible via: https://github.com/igmhub/LaCE
+
+This fork focuses on the post-processing of the hydrodynamic simulations using fake_spectra, from https://github.com/sbird/fake_spectra
+
+
+# Instructions below need to be updated #
+
+
+
 
 ## Installation
 
