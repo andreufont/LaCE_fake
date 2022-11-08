@@ -2,14 +2,14 @@
 
 from setuptools import setup, find_packages
 
-description = "Lyman-alpha forest flux power spectrum emulator"
-version="1.0.1"
+description = "Post-processing of hydrodynamic simulations for the LaCE emulator"
+version="0.0.1"
 
-setup(name="lace_manager",
+setup(name="lace_fake",
     version=version,
     description=description,
-    url="https://github.com/Chris-Pedersen/LaCE_manager",
-    author="Chris Pedersen, Andreu Font-Ribera et al.",
-    author_email="c.pedersen@nyu.edu",
+    url="https://github.com/andreufont/LaCE_fake",
+    author="Andreu Font-Ribera et al.",
+    author_email="afont@ifae.es",
     packages=find_packages(),
     )
