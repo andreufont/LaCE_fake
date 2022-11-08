@@ -4,10 +4,16 @@ import os
 import json
 import fake_spectra.tempdens as tdr
 import fake_spectra.griddedspectra as grid_spec 
+import time
 # our modules
 from lace_manager.setup_simulations import read_gadget
-from lace.cosmo import camb_cosmo
 from lace_manager.nuisance import thermal_model
+try:
+    from lace.cosmo import camb_cosmo
+    use_camb=True
+except:
+    print('will not be able to use CAMB')
+    use_camb=False
 
 def get_skewers_filename(num,n_skewers,width_Mpc,scale_T0=None,
             scale_gamma=None):
@@ -40,10 +46,21 @@ def dkms_dMpc_z(raw_dir,num):
     z=zs[num]
     # read cosmology information from Gadget file
     cosmo_params=read_gadget.camb_from_gadget(paramfile)
-    # setup CAMB object from dictionary with parameters
-    cosmo=camb_cosmo.get_cosmology_from_dictionary(cosmo_params)
-    # convert kms to Mpc (should be around 75 km/s/Mpc at z=3)
-    dkms_dMpc = camb_cosmo.dkms_dMpc(cosmo,z=z)
+    if use_camb:
+        # setup CAMB object from dictionary with parameters
+        cosmo=camb_cosmo.get_cosmology_from_dictionary(cosmo_params)
+        # convert kms to Mpc (should be around 75 km/s/Mpc at z=3)
+        dkms_dMpc=camb_cosmo.dkms_dMpc(cosmo,z=z)
+    else:
+        # read from cosmo dictionary
+        H0=cosmo_params['H0']
+        # for now can not handle neutrinos
+        assert cosmo_params['mnu'] ==0, 'implement neutrinos'
+        Om=(cosmo_params['omch2']+cosmo_params['ombh2'])/(H0/100)**2
+        Hz=H0*np.sqrt(Om*(1+z)**3+(1-Om))
+        dkms_dMpc=Hz/(1+z)
+        print(z,'; H(z) =',Hz,'; dv/dX =',dkms_dMpc)
+
     return dkms_dMpc,z
 
  
@@ -56,7 +73,7 @@ def thermal_broadening_Mpc(T_0,dkms_dMpc):
 
 
 def rescale_write_skewers_z(raw_dir,post_dir,num,n_skewers=50,
-            width_Mpc=0.1,scales_T0=None,scales_gamma=None):
+            width_Mpc=0.1,axis=None,scales_T0=None,scales_gamma=None):
     """Extract skewers for a given snapshot, for different temperatures."""
 
     # don't rescale unless asked to
@@ -71,17 +88,29 @@ def rescale_write_skewers_z(raw_dir,post_dir,num,n_skewers=50,
     # fake_spectra wants to know H(z) in km/s/Mpc
     Hz = dkms_dMpc * (1+z)
 
-    # figure out temperature-density before scalings
-    T0_ini, gamma_ini = tdr.fit_td_rel_plot(num,raw_dir+'/output/',plot=False)
 
-    sim_info={'raw_dir':raw_dir, 'post_dir':post_dir,
+    # figure out temperature-density before scalings
+    t0=time.time()
+    T0_ini, gamma_ini = tdr.fit_td_rel_plot(num,raw_dir+'/output/',plot=False)
+    t1=time.time()
+    print('measured temp-dens relation in in {} seconds'.format(t1-t0))
+
+    sim_info={'raw_dir':raw_dir, 'post_dir':post_dir, 'axis':axis,
                 'z':z, 'snap_num':num, 'n_skewers':n_skewers, 
                 'width_Mpc':width_Mpc, 'width_kms':width_kms,
                 'T0_ini':T0_ini, 'gamma_ini':gamma_ini,
                 'scales_T0':scales_T0, 'scales_gamma':scales_gamma}
 
     # make sure output directory exists (will write skewers there)
-    skewers_dir=post_dir+'/skewers/'
+    if axis is not None:
+        assert axis in [1,2,3], 'wrong axis '+axis
+        print('extract skewers for axis',axis)
+        skewers_dir=post_dir+'/skewers_{}/'.format(axis)
+    else:
+        skewers_dir=post_dir+'/skewers/'
+        # default in fake_spectra is 1
+        axis=1
+
     os.makedirs(skewers_dir,exist_ok=True)
 
     # will also store measured values
@@ -104,16 +133,20 @@ def rescale_write_skewers_z(raw_dir,post_dir,num,n_skewers=50,
             if (scale_T0==1.0) and (scale_gamma==1.0):
                 skewers=get_skewers_snapshot(raw_dir,skewers_dir,num,
                             n_skewers=n_skewers,width_kms=width_kms,
-                            skewers_filename=sk_filename,Hz=Hz)
+                            axis=axis,skewers_filename=sk_filename,Hz=Hz)
             else:
                 skewers=get_skewers_snapshot(raw_dir,skewers_dir,num,
                             n_skewers=n_skewers,width_kms=width_kms,
                             set_T0=T0,set_gamma=gamma,
-                            skewers_filename=sk_filename,Hz=Hz)
+                            axis=axis,skewers_filename=sk_filename,Hz=Hz)
 
             # call mean flux, so that the skewers are really computed
+            t0=time.time()
             mf=skewers.get_mean_flux()
+            t1=time.time()
+            print('extracted skewers in {} seconds'.format(t1-t0))
             skewers.save_file()
+
             sim_mf.append(mf)
             # store temperature information
             sim_T0.append(T0)
@@ -138,13 +171,11 @@ def rescale_write_skewers_z(raw_dir,post_dir,num,n_skewers=50,
     json.dump(sim_info,json_file)
     json_file.close()
 
-    print('done')
-
     return sim_info
 
 
 def get_skewers_snapshot(raw_dir,skewers_dir,snap_num,n_skewers=50,width_kms=10,
-                set_T0=None,set_gamma=None,skewers_filename=None,Hz=None):
+                axis=1,set_T0=None,set_gamma=None,skewers_filename=None,Hz=None):
     """Extract skewers for a particular snapshot"""
 
     if not skewers_filename:
@@ -171,11 +202,11 @@ def get_skewers_snapshot(raw_dir,skewers_dir,snap_num,n_skewers=50,width_kms=10,
     if (set_T0 is None) and (set_gamma is None):
         skewers = grid_spec.GriddedSpectra(snap_num,raw_dir+'/output/',
                 nspec=n_skewers,res=tweaked_width_kms,savefile=skewers_filename,
-                savedir=skewers_dir,reload_file=True,use_external_Hz=Hz)
+                axis=axis,savedir=skewers_dir,reload_file=True,use_external_Hz=Hz)
     else:
         skewers = grid_spec.GriddedSpectra(snap_num,raw_dir+'/output/',
                 nspec=n_skewers,res=tweaked_width_kms,savefile=skewers_filename,
-                savedir=skewers_dir,reload_file=True,use_external_Hz=Hz,
+                axis=axis,savedir=skewers_dir,reload_file=True,use_external_Hz=Hz,
                 set_T0=set_T0,set_gamma=set_gamma)
 
     return skewers
