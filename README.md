@@ -18,24 +18,28 @@ This fork focuses on the post-processing of the hydrodynamic simulations using f
 
 The following modules are required:
 
-`numpy`
+- inherited from LaCE
 
-`scipy`
+ `numpy`
 
-`matplotlib`
+ `scipy`
 
-`configobj`
+ `matplotlib`
 
-`CAMB` version 1.1.3 or later https://github.com/cmbant/CAMB (only works with Python 3.6 or later as of 14/01/2021)
+ `configobj`
+
+ `camb` 
+
+- to extract / read skewers using fake_spectra
+  
+ `fake_spectra` 
+
+ `bigfile` 
+
+ `hdf5`
+
+ - extra book-keeping
 
 `configargparse`
 
-`fake_spectra` 
-
-`bigfile` 
-
 `validate`
-
-`classylss`
-
-`asciitable`
