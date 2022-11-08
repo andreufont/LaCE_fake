@@ -1,7 +1,7 @@
 """ Run GenPk to measure power sepctrum of real flux."""
 
 import argparse
-from lace_manager.postprocess import flux_real_genpk
+from lace_fake import flux_real_genpk
 
 # get options from command line
 parser = argparse.ArgumentParser()

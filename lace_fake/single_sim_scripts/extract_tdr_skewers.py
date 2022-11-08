@@ -1,9 +1,8 @@
 import argparse
 # our modules below
-from lace_manager.postprocess import extract_skewers
+from lace_fake import extract_skewers
 
 """ Extract skewers for a given snapshot, using different temperatures. """
-
 
 # get options from command line
 parser = argparse.ArgumentParser()

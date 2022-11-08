@@ -5,8 +5,8 @@ import argparse
 import os
 import json
 # our modules below
-from lace_manager.postprocess import snapshot_admin
-from lace_manager.postprocess import extract_skewers
+from lace_fake import snapshot_admin
+from lace_fake import extract_skewers
 
 # get options from command line
 parser = argparse.ArgumentParser()
