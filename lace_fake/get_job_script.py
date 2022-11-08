@@ -1,7 +1,3 @@
-import numpy as np
-import os
-from lace_manager.setup_simulations import read_gadget
-from lace_manager.postprocess import flux_real_genpk
 
 def get_job_script(name,postprocess_script,options,time,output_files,
             machine="hypatia",**machine_kwargs):
