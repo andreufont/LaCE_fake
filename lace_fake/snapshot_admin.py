@@ -10,7 +10,7 @@ class SnapshotAdmin(object):
     """Book-keeping of all elements related to a snapshot.
         For now, it reads pre-computed skewers, for different temperatures."""
 
-    def __init__(self,snap_json,scales_tau=None,kF_Mpc=None,post_dir=None):
+    def __init__(self,snap_json,scales_tau=None,kF_Mpc=None,post_dir=None,axis=None):
         """Setup from JSON file with information about skewers extracted.
             One can also specify tau rescalings, and (optionally) provide
             the measured filtering length.
@@ -24,13 +24,19 @@ class SnapshotAdmin(object):
             print('use',post_dir,'as post-processing directory')
             self.data['post_dir']=post_dir
             self.data['raw_dir']=None
-            self.data['skewers_dir']=post_dir+'/skewers/'
         else:
             if 'post_dir' in self.data:
                 print('no post_dir provided, will use',self.data['post_dir'])
-                self.data['skewers_dir']=self.data['post_dir']+'/skewers/'
+                # self.data['skewers_dir']=self.data['post_dir']+'/skewers/'
             else:
                 raise ValueError('must provide post_dir when using old files')
+
+        if(axis == None):
+            self.data['axis'] = 1
+            self.data['skewers_dir']=post_dir+'/skewers/'
+        else:
+            self.data['axis'] = axis
+            self.data['skewers_dir'] = post_dir+'/skewers_{}/'.format(axis)
 
         # see if you have access filtering length information
         if kF_Mpc:
@@ -106,9 +112,11 @@ class SnapshotAdmin(object):
         num=self.data['snap_num']
         n_skewers=self.data['n_skewers']
         width_Mpc=self.data['width_Mpc']
+        axis = self.data['axis']
         
         filename=p1d_label+'_'+str(num)+'_Ns'+str(n_skewers)
         filename+='_wM'+str(int(1000*width_Mpc)/1000)
+        filename+='_axis'+str(int(axis))
         filename+='.json'
 
         return filename
