@@ -31,7 +31,6 @@ class SnapshotAdmin(object):
             else:
                 raise ValueError('must provide post_dir when using old files')
 
-        self.data['axis'] = axis
         if(axis == None):
             self.data['axis'] = 1
             self.data['skewers_dir']=post_dir+'/skewers/'
