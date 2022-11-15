@@ -10,7 +10,7 @@ class SnapshotAdmin(object):
     """Book-keeping of all elements related to a snapshot.
         For now, it reads pre-computed skewers, for different temperatures."""
 
-    def __init__(self,snap_json,scales_tau=None,kF_Mpc=None,post_dir=None,axis=None,skewers_dir=None):
+    def __init__(self,snap_json,scales_tau=None,kF_Mpc=None,post_dir=None,axis=None):
         """Setup from JSON file with information about skewers extracted.
             One can also specify tau rescalings, and (optionally) provide
             the measured filtering length.
