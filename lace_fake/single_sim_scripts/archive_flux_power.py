@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--post_dir', type=str,
                 help='Base directory with simulation post-processings',required=True)
 parser.add_argument('--snap_num', type=int, help='Snapshop number',required=True)
+parser.add_argument('--axis', type=int, help='Axis to extract skewers (1,2,3)',required=False)
 parser.add_argument('--n_skewers', type=int, default=10, help='Number of skewers per side',required=False)
 parser.add_argument('--width_Mpc', type=float, default=0.1, help='Cell width (in Mpc)',required=False)
 parser.add_argument('--scales_tau', type=str, default='1.0', help='Comma-separated list of optical depth scalings to use.',required=False)
@@ -25,6 +26,7 @@ verbose=args.verbose
 print('verbose =',verbose)
 
 post_dir=args.post_dir
+axis = args.axis
 
 scales_tau=[float(scale) for scale in args.scales_tau.split(',')]
 if verbose:
@@ -41,16 +43,31 @@ if os.path.isfile(kF_json):
 else:
     kF_Mpc=None
 
+if axis is not None:
+    assert axis in [1,2,3], 'wrong axis '+axis
+    print('compute power spectra for axes',axis)
+    skewers_dir=post_dir+'/skewers_{}/'.format(axis)
+else:
+    skewers_dir=post_dir+'/skewers/'
+    # default in fake_spectra is 1
+    axis=1
+
 # read file containing information of all temperature rescalings in snapshot
-snap_filename=post_dir+'/skewers/'+extract_skewers.get_snapshot_json_filename(
+snap_filename=skewers_dir+extract_skewers.get_snapshot_json_filename(
                 num=args.snap_num,n_skewers=args.n_skewers,
                 width_Mpc=args.width_Mpc)
 if verbose:
     print('setup snapshot admin from file',snap_filename)
 
 # create an object that will deal with all skewers in the snapshot
-snapshot=snapshot_admin.SnapshotAdmin(snap_filename,scales_tau=scales_tau,
-                                    kF_Mpc=kF_Mpc,post_dir=post_dir)
+snapshot=snapshot_admin.SnapshotAdmin(
+    snap_filename,
+    scales_tau=scales_tau,
+    kF_Mpc=kF_Mpc,
+    raw_dir=raw_dir,
+    post_dir=post_dir,
+    axis=axis
+)
 Nsk=len(snapshot.data['sk_files'])
 if verbose:
     print('snapshot has {} temperature rescalings'.format(Nsk))
