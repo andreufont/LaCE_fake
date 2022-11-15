@@ -64,7 +64,6 @@ snapshot=snapshot_admin.SnapshotAdmin(
     snap_filename,
     scales_tau=scales_tau,
     kF_Mpc=kF_Mpc,
-    raw_dir=raw_dir,
     post_dir=post_dir,
     axis=axis
 )
