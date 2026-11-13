@@ -106,7 +106,7 @@ def measure_p3d_Mpc(skewers,scale_tau,L_Mpc,
                 'n_xy':box['n_xy'],'n_z':box['n_z'],
                 'd_xy':box['d_xy'],'d_z':box['d_z'],
                 'n_k_bins':n_k_bins,'k_Mpc_max':k_Mpc_max,'n_mu_bins':n_mu_bins}
-
+    delta_F = delta_F.reshape(box['n_xy'], box['n_xy'], box['n_z'])
     # get Fourier modes
     norm_fac = 1.0 / delta_F.size
     modes = np.fft.fftn(delta_F) * norm_fac
